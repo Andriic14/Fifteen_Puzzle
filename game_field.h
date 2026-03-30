@@ -30,7 +30,7 @@ struct GameField
     // Перевірка можливості ходу
     bool canMove(int row, int col) const;
     // Виконання ходу
-    void makeMove(int tile);
+    bool makeMove(int tile);
     // Перевірка умови виграшу
     bool checkWin() const;
 };
