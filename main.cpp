@@ -22,7 +22,7 @@ int main() {
 	ctrl.field.init(size);
 
 	cout << "Початковий стан поля:" << endl;
-	ctrl.field.print();
+	cout << ctrl.field;
 	// фішка зліва від порожньої
 	int r = size - 1, c = size - 2;
 	cout << "\nЧи можна перемістити фішку [" << r << "][" << c << "] = " << ctrl.field.board[r][c] << "?" << endl;
@@ -43,15 +43,15 @@ int main() {
 	// виконання ходу
 	int tile = ctrl.field.board[size - 1][size - 2];
 	cout << "\nВиконуємо хід — переміщуємо фішку " << tile << ":" << endl;
-	ctrl.field.makeMove(tile);
-	ctrl.field.print();
+	ctrl.field ^ tile;
+	cout << ctrl.field;
 
 
 	// ще хід
 	int tile2 = ctrl.field.board[size - 2][size - 2];
 	cout << "\nВиконуємо хід — переміщуємо фішку " << tile2 << ":" << endl;
-	ctrl.field.makeMove(tile2);
-	ctrl.field.print();
+	ctrl.field ^ tile2;
+	cout << ctrl.field;
 
 	// перевірка виграшу
 	cout << "\nПеревірка виграшу після ходів: ";
@@ -74,7 +74,7 @@ int main() {
 	ctrl.field.emptyCol = size - 1;
 
 	cout << "\nВиграшний стан поля:" << endl;
-	ctrl.field.print();
+	cout << ctrl.field;
 	cout << "Перевірка виграшу: ";
 	if (ctrl.field.checkWin())
 		cout << "Виграш!" << endl;
