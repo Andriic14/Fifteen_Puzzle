@@ -30,20 +30,6 @@ void GameField::init(int d) {
 	state = Active;
 }
 
-void GameField::print() const {
-	for (int i = 0; i < size; i++){
-		for (int j = 0; j < size; j++) {
-			if (board[i][j] == 0) {
-				cout << setw(3) << "_";
-			}
-			else {
-				cout << setw(3) << board[i][j];
-			}
-		}
-		cout << endl;
-	}
-}
-
 void GameField::freeField() {
 	for (int i = 0; i < size; i++) {
 		delete[] board[i];
@@ -62,7 +48,7 @@ bool GameField::canMove(int row, int col) const {
 	return false; 
 }
 
-bool GameField::makeMove(int tile) {
+bool GameField::operator^(int tile) {
 	int tileRow = -1, tileCol = -1;
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
@@ -95,4 +81,19 @@ bool GameField::checkWin() const {
 		}
 	}
 	return false; 
+}
+
+std::ostream& operator<<(std::ostream& out, const GameField& field) {
+	for (int i = 0; i < field.size; i++) {
+		for (int j = 0; j < field.size; j++) {
+			if (field.board[i][j] == 0) {
+				out << setw(3) << "_";
+			}
+			else {
+				out << setw(3) << field.board[i][j];
+			}
+		}
+		out << endl;
+	}
+	return out;
 }
