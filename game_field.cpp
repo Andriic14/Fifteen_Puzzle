@@ -1,6 +1,7 @@
 #include "game_field.h"
 #include <iostream>
 #include <iomanip>
+#include <stdexcept>
 
 using namespace std;
 
@@ -49,6 +50,10 @@ bool GameField::canMove(int row, int col) const {
 }
 
 bool GameField::operator^(int tile) {
+	if (tile<1 || tile >size * size - 1) {
+		throw  runtime_error("Фішки з таким номером не існує.");
+	}
+
 	int tileRow = -1, tileCol = -1;
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
@@ -58,8 +63,12 @@ bool GameField::operator^(int tile) {
 			}
 		}
 	}
+
 	if (tileRow == -1) return false;
-	if (!canMove(tileRow, tileCol)) return false;
+
+	if (!canMove(tileRow, tileCol)) {
+		throw runtime_error("Хід неможливий, фішка не сусідня з порожньою клітинкою.");
+	}
 	board[emptyRow][emptyCol] = tile;
 	board[tileRow][tileCol] = 0;
 
