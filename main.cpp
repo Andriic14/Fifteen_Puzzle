@@ -12,7 +12,16 @@ int main() {
 	cout << "==========================" << endl;
 	cout << "    Гра П'ятнашки        " << endl;
 	cout << "==========================" << endl;
-	GameController ctrl;
-	ctrl.startGame();
+	
+	try {
+		GameController ctrl;
+		ctrl.startGame();
+	}
+	catch (const runtime_error& e) {
+		cout << "Критична помилка: " << e.what() << endl;
+	}
+	catch (...) {
+		cout << "Невідома помилка. Програма завершена." << endl;
+	}
 	return 0;
 }
