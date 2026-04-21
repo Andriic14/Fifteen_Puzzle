@@ -1,8 +1,18 @@
 #include "game_ctrl.h"
 #include <iostream>
 #include <stdexcept>
+#include <ctime>
 
 using namespace std;
+
+string currentTime() {
+    time_t now = time(0);
+    tm localT;
+    localtime_s(&localT, &now);
+    char buf[20];
+    strftime(buf, sizeof(buf), "%H:%M:%S", &localT);
+    return string(buf);
+}
 
 void GameController::startGame() {
     int size;
@@ -17,7 +27,20 @@ void GameController::startGame() {
 
     field.init(size);
     moveCount = 0;
+
+    logFile.open("game_log.txt");
+    if (!logFile.is_open()) {
+        cout << "Помилка: не вдалося створити лог-файл." << endl;
+    }
+    else {
+        logFile << "[" << currentTime() << "] Гра розпочата. " << "Розмір поля: " << size << endl;
+        logFile << "[" << currentTime() << "] Початковий стан поля:" << endl;
+        logFile << field;
+    }
     gameLoop();
+    if (logFile.is_open()) {
+        logFile.close();
+    }
 }
 
 int GameController::processInput() {
@@ -51,20 +74,37 @@ void GameController::gameLoop() {
             if (input == 32) {
                 field.state = Interrupted;
                 cout << "\nГру перервано." << endl;
+                if (logFile.is_open()) {
+                    logFile << "[" << currentTime() << "] "<< "Гра завершена. Статус: Зупинка. "<< "Ходів: " << moveCount << endl;
+                }
                 break;
             }
             bool moved = field ^ input;
             moveCount++;
+
+            if (logFile.is_open()) {
+                logFile << "[" << currentTime() << "] "<< "Хід: фішка " << input << endl;
+                logFile << "[" << currentTime() << "] "<< "Стан поля після ходу:" << endl;
+                logFile << field;
+            }
+
             if (field.checkWin()) {
                 field.state = Win;
                 cout << "\n";
                 cout << field;
                 cout << "Вітаємо! Ви виграли за " << moveCount << " ходів." << endl;
+
+                if (logFile.is_open()) {
+                    logFile << "[" << currentTime() << "] "<< "Гра завершена. Статус: Виграш. "<< "Ходів: " << moveCount << endl;
+                }
             }
         }
         catch (const runtime_error& e) {
             cout << "Помилка: " << e.what() << endl;
             cout << "Спробуйте ще раз." << endl;
+            if (logFile.is_open()) {
+                logFile << "[" << currentTime() << "] Помилка: "<< e.what() << endl;
+            }
         }
     }
 }
